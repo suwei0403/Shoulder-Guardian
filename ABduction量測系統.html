@@ -1,0 +1,256 @@
+<title>應用全身辨識技術輔助預防冰凍肩之研究</title>
+<style>
+  body {
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background: #f0f0f0;
+  }
+  
+  .container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .demo-section, .live-section {
+    flex: 1;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 15px;
+  }
+
+  canvas {
+    width: 100%;
+    max-width: 640px;
+    border: 1px solid #ddd;
+  }
+
+  #score-display {
+    margin-top: 15px;
+    padding: 10px;
+    background: #e9ecef;
+    border-radius: 5px;
+  }
+
+  .countdown {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 72px;
+    color: red;
+    display: none;
+  }
+
+  #download-btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  #download-btn:hover {
+    background: #0056b3;
+  }
+</style>
+</head>
+<body>
+<h1>應用全身辨識技術輔助預防冰凍肩之研究</h1>
+
+<div class="container">
+  <div class="demo-section">
+    <h2>示範圖示</h2>
+    <img id="demo-img" src="S__2334726.jpg" alt="示範圖示" style="width:100%">
+  </div>
+
+  <div class="live-section">
+    <h2>即時偵測</h2>
+    <video id="video" style="display: none;"></video>
+    <canvas id="canvas"></canvas>
+    <div id="score-display">
+      <div>左手角度: <span id="left-angle">0°</span> (分數: <span id="left-score">0</span>)</div>
+      <div>右手角度: <span id="right-angle">0°</span> (分數: <span id="right-score">0</span>)</div>
+    </div>
+    <button id="download-btn">截圖</button>
+  </div>
+</div>
+
+<div class="countdown" id="countdown">3</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
+
+<script>
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const leftAngleSpan = document.getElementById('left-angle');
+const rightAngleSpan = document.getElementById('right-angle');
+const leftScoreSpan = document.getElementById('left-score');
+const rightScoreSpan = document.getElementById('right-score');
+const downloadBtn = document.getElementById('download-btn');
+const countdown = document.getElementById('countdown');
+
+// 設置canvas尺寸
+canvas.width = 640;
+canvas.height = 480;
+
+// 初始化MediaPipe Pose
+const pose = new Pose({
+  locateFile: (file) => {
+    return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
+  }
+});
+
+pose.setOptions({
+  modelComplexity: 1,
+  smoothLandmarks: true,
+  minDetectionConfidence: 0.5,
+  minTrackingConfidence: 0.5
+});
+
+// 計算角度函數
+function calculateAngle(A, B, C) {
+  const radians = Math.atan2(C.y - B.y, C.x - B.x) - 
+                 Math.atan2(A.y - B.y, A.x - B.x);
+  let angle = Math.abs(radians * 180.0 / Math.PI);
+  if (angle > 180.0) angle = 360 - angle;
+  return angle;
+}
+
+// 計算分數函數
+function calculateScore(angle) {
+  const score = (angle / 150) * 10;
+  return Math.min(Math.max(score, 0), 10).toFixed(1);
+}
+
+// 處理pose結果
+pose.onResults((results) => {
+  // 清空canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // 繪製鏡像視訊
+  ctx.save();
+  ctx.scale(-1, 1);
+  ctx.translate(-canvas.width, 0);
+  ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+  ctx.restore();
+
+  if (results.poseLandmarks) {
+    const landmarks = results.poseLandmarks;
+
+    // 繪製骨骼連接線
+    // 左側肩膀到手肘 (11-13)
+    ctx.beginPath();
+    ctx.strokeStyle = 'blue';
+    ctx.setLineDash([5, 5]);
+    ctx.lineWidth = 3;
+    ctx.moveTo(canvas.width - landmarks[11].x * canvas.width, landmarks[11].y * canvas.height);
+    ctx.lineTo(canvas.width - landmarks[13].x * canvas.width, landmarks[13].y * canvas.height);
+    ctx.stroke();
+
+    // 右側肩膀到手肘 (12-14)
+    ctx.beginPath();
+    ctx.moveTo(canvas.width - landmarks[12].x * canvas.width, landmarks[12].y * canvas.height);
+    ctx.lineTo(canvas.width - landmarks[14].x * canvas.width, landmarks[14].y * canvas.height);
+    ctx.stroke();
+
+    // 左側軀幹線 (11-23)
+    ctx.beginPath();
+    ctx.strokeStyle = 'yellow';
+    ctx.setLineDash([]);
+    ctx.moveTo(canvas.width - landmarks[11].x * canvas.width, landmarks[11].y * canvas.height);
+    ctx.lineTo(canvas.width - landmarks[23].x * canvas.width, landmarks[23].y * canvas.height);
+    ctx.stroke();
+
+    // 右側軀幹線 (12-24)
+    ctx.beginPath();
+    ctx.moveTo(canvas.width - landmarks[12].x * canvas.width, landmarks[12].y * canvas.height);
+    ctx.lineTo(canvas.width - landmarks[24].x * canvas.width, landmarks[24].y * canvas.height);
+    ctx.stroke();
+
+    // 計算並顯示角度
+    const leftAngle = calculateAngle(
+      landmarks[23],
+      landmarks[11],
+      landmarks[13]
+    );
+    
+    const rightAngle = calculateAngle(
+      landmarks[24],
+      landmarks[12],
+      landmarks[14]
+    );
+
+    // 更新角度顯示
+    leftAngleSpan.textContent = `${leftAngle.toFixed(1)}°`;
+    rightAngleSpan.textContent = `${rightAngle.toFixed(1)}°`;
+
+    // 更新分數
+    leftScoreSpan.textContent = calculateScore(leftAngle);
+    rightScoreSpan.textContent = calculateScore(rightAngle);
+
+    // 在關節點上顯示編號
+    const joints = [11, 12, 13, 14, 23, 24];
+    joints.forEach(i => {
+      ctx.fillStyle = 'red';
+      ctx.beginPath();
+      ctx.arc(canvas.width - landmarks[i].x * canvas.width, 
+              landmarks[i].y * canvas.height, 5, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      ctx.fillStyle = 'white';
+      ctx.font = '12px Arial';
+      ctx.fillText(i.toString(), 
+                  canvas.width - landmarks[i].x * canvas.width + 10,
+                  landmarks[i].y * canvas.height);
+    });
+  }
+});
+
+// 設置相機
+const camera = new Camera(video, {
+  onFrame: async () => {
+    await pose.send({image: video});
+  },
+  width: 640,
+  height: 480
+});
+
+camera.start();
+
+// 截圖功能
+downloadBtn.addEventListener('click', () => {
+  let count = 3;
+  countdown.style.display = 'block';
+  countdown.textContent = count;
+
+  const countdownInterval = setInterval(() => {
+    count--;
+    if (count > 0) {
+      countdown.textContent = count;
+    } else {
+      clearInterval(countdownInterval);
+      countdown.style.display = 'none';
+      
+      // 創建下載連結
+      const link = document.createElement('a');
+      link.download = 'pose-capture.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+  }, 1000);
+});
+</script>
+</body></html>
