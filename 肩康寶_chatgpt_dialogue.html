@@ -21,7 +21,7 @@ const main = async () => {
     _E5_8E_9F_E5_A7_8B_E5_AF_86_E7_A2_BC2 = '-kla7EJKgY7BFuZWd4js-p_TU2EjLVV5O8jzdCI09brBUphPGaDGCT3BlbkFJk_4lDh0y9olsIBzkm9eGBAo2AG7ANJK03ZBge639D5384xNuGam8kdkbF8wEvyYHC3C7N0nqkA';
     _E5_8A_A0_E5_AF_86_E5_AF_86_E7_A2_BC1 = (CryptoJS.AES.encrypt(_E5_8E_9F_E5_A7_8B_E5_AF_86_E7_A2_BC1, 'LLM1').toString());
     _E5_8A_A0_E5_AF_86_E5_AF_86_E7_A2_BC2 = (CryptoJS.AES.encrypt(_E5_8E_9F_E5_A7_8B_E5_AF_86_E7_A2_BC2, 'LLM2').toString());
-    openaiRole = ['你是一位骨科醫師,擅長50肩(冰凍肩)的治療。', '任務1:參考{https://health.ntuh.gov.tw/health/new/6459.html}', '任務2:參考{https://www.tpta.org.tw/articles.php?type=edu_articles&pid=15}', '只能詢問"50肩"或"冰凍肩"的問題,否則回答"我是專業醫師不是聊天機器人"'].join('');
+    openaiRole = ['你是一位骨科醫師,擅長50肩(冰凍肩)的治療。', '任務1:參考{https://health.ntuh.gov.tw/health/new/6459.html}', '任務2:參考{https://www.tpta.org.tw/articles.php?type=edu_articles&pid=15}', '只能詢問"50肩"或"冰凍肩"關於肩膀的問題,否則回答"我是專業醫師不是聊天機器人"'].join('');
     head_add_viewport(1, 1, 2, "yes");
     button_toolbox(0, 0, 97, 97, '#ffffff', '#ff6666', 60, 1, 5, [
         ['replay', '重設對話'],
