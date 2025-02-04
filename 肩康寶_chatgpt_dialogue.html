@@ -1,0 +1,72 @@
+<!DOCTYPE html><html><head><meta charset='utf-8'><meta http-equiv='Access-Control-Allow-Headers' content='Origin, X-Requested-With, Content-Type, Accept'><meta http-equiv='Access-Control-Allow-Methods' content='GET,POST,PUT,DELETE,OPTIONS'><meta http-equiv='Access-Control-Allow-Origin' content='*'><meta http-equiv='Access-Control-Allow-Credentials' content='true'><script src='https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js'></script><script src='https://fustyles.github.io/webduino/SpBlocklyJS/GameElements_20190131/marked.min.js'></script><script src='https://fustyles.github.io/webduino/SpBlocklyJS/GameElements_20190131/gameelements.js'></script><link rel='stylesheet' href='https://fustyles.github.io/webduino/SpBlocklyJS/css/icon_custom.css' /><script src='https://fustyles.github.io/webduino/SpBlocklyJS/openAI_20221212/openAI.js'></script><script src='https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js'></script></head><body>
+<script>
+const delay = (seconds) => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, seconds * 1000);
+    });
+};
+const main = async () => {
+    var _E5_8E_9F_E5_A7_8B_E5_AF_86_E7_A2_BC1, _E5_8E_9F_E5_A7_8B_E5_AF_86_E7_A2_BC2, _E5_8A_A0_E5_AF_86_E5_AF_86_E7_A2_BC1, _E5_8A_A0_E5_AF_86_E5_AF_86_E7_A2_BC2, openaiRole;
+
+    // 描述此函式...
+    async function _E9_80_81_E5_87_BA_E5_B0_8D_E8_A9_B1() {
+        span_set('state', "innerHTML", (fontText(3, '#3333ff', 'Arial', '詢問中...')));
+        iframe_set('', "srcdoc", ([fontText(3, '#cc0000', 'Arial', (text_get('', "value"))), '<br>', '<br>', iframe_get('', "srcdoc")].join('')));
+        await openai_chat_request((text_get('', "value")));
+        text_set('', "value", '');
+    }
+
+
+    _E5_8E_9F_E5_A7_8B_E5_AF_86_E7_A2_BC1 = 'sk-proj-8eDH9Z0fdR7TzEBUJFPn1';
+    _E5_8E_9F_E5_A7_8B_E5_AF_86_E7_A2_BC2 = '-kla7EJKgY7BFuZWd4js-p_TU2EjLVV5O8jzdCI09brBUphPGaDGCT3BlbkFJk_4lDh0y9olsIBzkm9eGBAo2AG7ANJK03ZBge639D5384xNuGam8kdkbF8wEvyYHC3C7N0nqkA';
+    _E5_8A_A0_E5_AF_86_E5_AF_86_E7_A2_BC1 = (CryptoJS.AES.encrypt(_E5_8E_9F_E5_A7_8B_E5_AF_86_E7_A2_BC1, 'LLM1').toString());
+    _E5_8A_A0_E5_AF_86_E5_AF_86_E7_A2_BC2 = (CryptoJS.AES.encrypt(_E5_8E_9F_E5_A7_8B_E5_AF_86_E7_A2_BC2, 'LLM2').toString());
+    openaiRole = ['你是一位骨科醫師,擅長50肩(冰凍肩)的治療。', '任務1:參考{https://health.ntuh.gov.tw/health/new/6459.html}', '任務2:參考{https://www.tpta.org.tw/articles.php?type=edu_articles&pid=15}', '只能詢問"50肩"或"冰凍肩"的問題,否則回答"我是專業醫師不是聊天機器人"'].join('');
+    head_add_viewport(1, 1, 2, "yes");
+    button_toolbox(0, 0, 97, 97, '#ffffff', '#ff6666', 60, 1, 5, [
+        ['replay', '重設對話'],
+        ['save', '儲存對話'],
+        ['upload_file', '載入對話'],
+        ['wechat', '送出對話']
+    ]);
+    span_create('', 0, 100, 24, '對話', 999);
+    text_create('', 350, 30, 50, 100, '#ffffff', '#000000', 20, 1, '', 999, true);
+    async function text__keydown(event) {
+        if (event.keyCode == 13) {
+            _E9_80_81_E5_87_BA_E5_B0_8D_E8_A9_B1();
+        }
+    };
+    document.getElementById('gametext_' + '').addEventListener("keydown", text__keydown, true);
+    iframe_create('', 400, 400, 10, 160, "0", "yes", '', '　', 1, 999, true);
+    openai_chat_initial((String(CryptoJS.AES.decrypt(_E5_8A_A0_E5_AF_86_E5_AF_86_E7_A2_BC1, 'LLM1').toString(CryptoJS.enc.Utf8)) + String(CryptoJS.AES.decrypt(_E5_8A_A0_E5_AF_86_E5_AF_86_E7_A2_BC2, 'LLM2').toString(CryptoJS.enc.Utf8))), openaiRole, "gpt-4o");
+    openai_chat_response = async function() {
+        span_set('state', "innerHTML", '');
+        iframe_set('', "srcdoc", ([fontText(3, '#33cc00', 'Arial', (openai_chat_response_get('br'))), '<br>', '<br>', iframe_get('', "srcdoc")].join('')));
+
+    };
+    async function gamebutton_wechat_onclick(event) {
+        _E9_80_81_E5_87_BA_E5_B0_8D_E8_A9_B1();
+    };
+    document.getElementById("gamebutton_wechat").addEventListener("click", gamebutton_wechat_onclick, true);
+    async function gamebutton_replay_onclick(event) {
+        openai_chat_content_clear();
+        span_set('state', "innerHTML", '');
+        iframe_set('', "srcdoc", '');
+        text_set('', "value", '');
+    };
+    document.getElementById("gamebutton_replay").addEventListener("click", gamebutton_replay_onclick, true);
+    async function gamebutton_save_onclick(event) {
+        openai_chat_content_file("save");
+    };
+    document.getElementById("gamebutton_save").addEventListener("click", gamebutton_save_onclick, true);
+    async function gamebutton_upload_file_onclick(event) {
+        span_set('state', "innerHTML", '');
+        iframe_set('', "srcdoc", '');
+        text_set('', "value", '');
+        openai_chat_content_file("open");
+    };
+    document.getElementById("gamebutton_upload_file").addEventListener("click", gamebutton_upload_file_onclick, true);
+};
+main();
+</script>
+</body></html>
