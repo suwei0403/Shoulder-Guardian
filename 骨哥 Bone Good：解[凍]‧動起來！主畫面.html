@@ -1,0 +1,43 @@
+<!DOCTYPE html><html><head><meta charset='utf-8'><meta http-equiv='Access-Control-Allow-Headers' content='Origin, X-Requested-With, Content-Type, Accept'><meta http-equiv='Access-Control-Allow-Methods' content='GET,POST,PUT,DELETE,OPTIONS'><meta http-equiv='Access-Control-Allow-Origin' content='*'><meta http-equiv='Access-Control-Allow-Credentials' content='true'><script src='https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js'></script><script src='https://fustyles.github.io/webduino/SpBlocklyJS/GameElements_20190131/marked.min.js'></script><script src='https://fustyles.github.io/webduino/SpBlocklyJS/GameElements_20190131/gameelements.js'></script><link rel='stylesheet' href='https://fustyles.github.io/webduino/SpBlocklyJS/css/icon_custom.css' /></head><body>
+<script>
+const delay = (seconds) => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, seconds * 1000);
+    });
+};
+const main = async () => {
+    span_create('', 480, 0, 67, '骨哥bone good', 999);
+    image_create('', 'https://lh3.googleusercontent.com/gg-dl/ABS2GSkHllK7XVFPv6lp-wgxaABTOPyVjYpoaj_52pvqfyuBt49qIuZ42AJ4tlovomzPVTGYArHUxD4ttz4oOof-6dG6y01cU-rGQxMkrQsxKp1bpo1DNz6-ICMQEmeDO8REbqj44uAwNsRBEhOxcCii4UvchOMSjGCYSFyXP8pxtcshErKh=s1024-rj', 500, 600, 500, 150, 999, true);
+    button_create('H', 200, 150, 0, 20, 70, '#ffffff', '骨哥bone good', 20, 999, true);
+    button_create('1', 200, 150, 0, 180, 1, '#ff0000', 'ABduction量測系統', 20, 999, true);
+    button_create('2', 200, 150, 0, 340, 1, '#3366ff', 'Extension量測系統', 20, 999, true);
+    button_create('3', 200, 150, 0, 500, 1, '#33ff33', 'Flexion量測系統', 20, 999, true);
+    button_create('LLM', 200, 150, 0, 660, 1, '#99ffff', '冰凍肩保健醫師', 20, 999, true);
+    async function gamebutton_H_onclick(event) {
+        iframe_delete('');
+        image_create('', 'https://suwei0403.github.io/Shoulder-Guardian/肩康寶封面圖.jpg', 500, 600, 500, 150, 999, true);
+    };
+    document.getElementById("gamebutton_H").addEventListener("click", gamebutton_H_onclick, true);
+    async function gamebutton_1_onclick(event) {
+        window.open('https://websim.com/p/fjy_7swj7a0gk1qq7v2k', "_blank");
+    };
+    document.getElementById("gamebutton_1").addEventListener("click", gamebutton_1_onclick, true);
+    async function gamebutton_2_onclick(event) {
+        window.open('https://websim.com/p/zaw4y7ujcxjd34zkf__k', "_blank");
+    };
+    document.getElementById("gamebutton_2").addEventListener("click", gamebutton_2_onclick, true);
+    async function gamebutton_3_onclick(event) {
+        window.open('https://websim.com/p/bdssfwk4ou23kw0o1e0j', "_blank");
+    };
+    document.getElementById("gamebutton_3").addEventListener("click", gamebutton_3_onclick, true);
+    async function gamebutton_LLM_onclick(event) {
+        image_delete('');
+        iframe_create('', 750, 600, 350, 180, "1", "yes", 'https://suwei0403.github.io/Shoulder-Guardian/骨哥AI醫生.html', '', 1, 999, true);
+    };
+    document.getElementById("gamebutton_LLM").addEventListener("click", gamebutton_LLM_onclick, true);
+
+    iframe_create('', 60, 30, 0, 100, "0", "yes", '', '', 1, 999, true);
+};
+main();
+</script>
+</body></html>
